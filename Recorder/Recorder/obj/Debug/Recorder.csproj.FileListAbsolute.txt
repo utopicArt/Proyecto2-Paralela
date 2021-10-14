@@ -1,0 +1,10 @@
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\bin\Debug\Recorder.exe.config
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\bin\Debug\Recorder.exe
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\bin\Debug\Recorder.pdb
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.csproj.AssemblyReference.cache
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.Grabadora.resources
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.Properties.Resources.resources
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.csproj.GenerateResource.cache
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.csproj.CoreCompileInputs.cache
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.exe
+C:\Users\Adrian\Documents\Visual Studio Projects\Paralela\Proyecto\Proyecto2-Paralela\Recorder\Recorder\obj\Debug\Recorder.pdb
