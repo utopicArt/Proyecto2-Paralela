@@ -1,14 +1,15 @@
 package recorder;
+import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import javax.imageio.ImageIO;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -19,13 +20,18 @@ public class App extends javax.swing.JFrame {
     SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmssa");
     
     public BufferedImage robo() throws Exception{
-        Calendar now = Calendar.getInstance();
+        String date = formatter.format(Calendar.getInstance().getTime());
+        String directory = System.getProperty("user.dir") + "\\src\\recorder\\Screenshots\\";
+        
+        File path = new File(directory);
         Robot robot = new Robot();
-        System.out.println("Directorio: " + System.getProperty("user.dir"));
+        
+        if (!path.isDirectory())
+            new File(directory).mkdirs();
+
         BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
-        ImageIO.write(screenShot, "JPG", new File(System.getProperty("user.dir")
-                +"\\src\\recorder\\Screenshots\\"+formatter.format(now.getTime())+".jpg"));
-        System.out.println("Imagen tomada correctamente \""+formatter.format(now.getTime()) + ".jpg\"");
+        ImageIO.write(screenShot, "JPG", new File(directory + date + ".jpg"));
+        System.out.println("Imagen tomada correctamente \"" + date + ".jpg\"");
         
         return screenShot;
     }
@@ -51,6 +57,9 @@ public class App extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jLabel1.setBackground(new java.awt.Color(153, 153, 153));
+        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
 
         jButton1.setText("Capturar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
@@ -87,9 +96,13 @@ public class App extends javax.swing.JFrame {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         try{
-            jLabel1.setIcon(new ImageIcon(robo()));
+            Image dimg = robo().getScaledInstance(jLabel1.getWidth(), 
+                    jLabel1.getHeight(), Image.SCALE_SMOOTH);
+            jLabel1.setIcon(new ImageIcon(dimg));
         }catch(Exception ex){
-            System.out.println("\n\nOcurrio un error:\n"  + ex.getMessage());
+            JOptionPane.showMessageDialog(null, 
+                    "Ocurrio un error:" + ex.getMessage(), "Error",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
