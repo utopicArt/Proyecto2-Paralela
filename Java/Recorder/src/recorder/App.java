@@ -12,22 +12,20 @@ import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
- *
- * @author Adrian
+ * @author  Adrian Marin Alcala
+ * Desc:    Aplicacion que realiza una grabacion de video a base de solo screenshots
  */
 public class App extends javax.swing.JFrame {
 
-    SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMddhhmmssa");
+    SimpleDateFormat formatter;
+    int x = 0;
+    static Thread t;
+    static String directory;
     
     public BufferedImage robo() throws Exception{
         String date = formatter.format(Calendar.getInstance().getTime());
-        String directory = System.getProperty("user.dir") + "\\src\\recorder\\Screenshots\\";
         
-        File path = new File(directory);
         Robot robot = new Robot();
-        
-        if (!path.isDirectory())
-            new File(directory).mkdirs();
 
         BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         ImageIO.write(screenShot, "JPG", new File(directory + date + ".jpg"));
@@ -37,6 +35,13 @@ public class App extends javax.swing.JFrame {
     }
     
     public App() {
+        formatter = new SimpleDateFormat("yyyyMMddhhmmssa");
+        directory = System.getProperty("user.dir") 
+                + "\\src\\recorder\\Screenshots\\";
+        File path = new File(directory);
+        if (!path.isDirectory())
+            new File(directory).mkdirs();
+        
         initComponents();
         setLocationRelativeTo(null);
         setTitle("Grabadora de pantalla");
@@ -55,6 +60,7 @@ public class App extends javax.swing.JFrame {
 
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -65,6 +71,13 @@ public class App extends javax.swing.JFrame {
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("jButton2");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
             }
         });
 
@@ -79,7 +92,9 @@ public class App extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(326, 326, 326)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(334, Short.MAX_VALUE))
+                .addGap(57, 57, 57)
+                .addComponent(jButton2)
+                .addContainerGap(200, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -87,7 +102,9 @@ public class App extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
+                    .addComponent(jButton2))
                 .addGap(16, 16, 16))
         );
 
@@ -95,9 +112,10 @@ public class App extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
+        try{            
             Image dimg = robo().getScaledInstance(jLabel1.getWidth(), 
                     jLabel1.getHeight(), Image.SCALE_SMOOTH);
+            //Thread.sleep((long)33.333);
             jLabel1.setIcon(new ImageIcon(dimg));
         }catch(Exception ex){
             JOptionPane.showMessageDialog(null, 
@@ -105,6 +123,11 @@ public class App extends javax.swing.JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        videoTransform vT = new videoTransform(directory);
+        vT.createVideo();
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -132,7 +155,8 @@ public class App extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(App.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
-
+        //t = new Thread();
+        //t.start();
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
@@ -143,6 +167,7 @@ public class App extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
