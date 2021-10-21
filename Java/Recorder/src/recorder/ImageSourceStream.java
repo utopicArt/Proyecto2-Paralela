@@ -19,7 +19,7 @@ class ImageSourceStream implements PullBufferStream {
     int width, height;
     VideoFormat format;
 
-    int nextImage = 0; // index of the next image to be read.
+    int nextImage = 0;
     boolean ended = false;
 
     public ImageSourceStream(int width, int height, int frameRate,
@@ -59,36 +59,36 @@ class ImageSourceStream implements PullBufferStream {
         nextImage++;
 
         // Open a random access file for the next image.
-        RandomAccessFile raFile=null;
+        RandomAccessFile raFile = null;
         try {
             raFile = new RandomAccessFile(imageFile, "r");
             byte data[] = null;
 
-        // Check the input buffer type & size.
+            // Check the input buffer type & size.
+            if (buf.getData() instanceof byte[]) {
+                data = (byte[]) buf.getData();
+            }
 
-        if (buf.getData() instanceof byte[])
-            data = (byte[]) buf.getData();
+            // Check to see the given buffer is big enough for the frame.
+            if (data == null || data.length < raFile.length()) {
+                data = new byte[(int) raFile.length()];
+                buf.setData(data);
+            }
 
-        // Check to see the given buffer is big enough for the frame.
-        if (data == null || data.length < raFile.length()) {
-            data = new byte[(int) raFile.length()];
-            buf.setData(data);
-        }
+            // Read the entire JPEG image from the file.
+            raFile.readFully(data, 0, (int) raFile.length());
 
-        // Read the entire JPEG image from the file.
-        raFile.readFully(data, 0, (int) raFile.length());
-
-        buf.setOffset(0);
-        buf.setLength((int) raFile.length());
-        buf.setFormat(format);
-        buf.setFlags(buf.getFlags() | Buffer.FLAG_KEY_FRAME);
+            buf.setOffset(0);
+            buf.setLength((int) raFile.length());
+            buf.setFormat(format);
+            buf.setFlags(buf.getFlags() | Buffer.FLAG_KEY_FRAME);
 
         } catch (IOException e) {
             // TODO: proper logging
             System.out.println(e.getMessage());
             throw e;
         } finally {
-            if ( raFile != null ) {
+            if (raFile != null) {
                 try {
                     raFile.close();
                 } catch (IOException e) {
@@ -98,9 +98,6 @@ class ImageSourceStream implements PullBufferStream {
         }
     }
 
-    /**
-     * Return the format of each video frame. That will be JPEG.
-     */
     public Format getFormat() {
         return format;
     }

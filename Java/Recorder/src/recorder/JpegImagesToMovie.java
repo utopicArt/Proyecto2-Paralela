@@ -29,13 +29,10 @@ package recorder;
  * facility. Licensee represents and warrants that it will not use or
  * redistribute the Software for such purposes.
  */
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Vector;
 
-import javax.imageio.ImageIO;
 import javax.media.ConfigureCompleteEvent;
 import javax.media.Controller;
 import javax.media.ControllerEvent;
@@ -63,21 +60,6 @@ import javax.media.protocol.FileTypeDescriptor;
  * QuickTime movie.
  */
 class JpegImagesToMovie implements ControllerListener, DataSinkListener {
-
-    static private Vector<String> getImageFilesPathsVector(
-            String imagesFolderPath) {
-        File imagesFolder = new File(imagesFolderPath);
-        String[] imageFilesArray = imagesFolder.list();
-        Vector<String> imageFilesPathsVector = new Vector<String>();
-        for (String imageFileName : imageFilesArray) {
-            if (!imageFileName.toLowerCase().endsWith("jpg")) {
-                continue;
-            }
-            imageFilesPathsVector.add(imagesFolder.getAbsolutePath()
-                    + File.separator + imageFileName);
-        }
-        return imageFilesPathsVector;
-    }
 
     public boolean doIt(int width, int height, int frameRate,
             Vector<String> inFiles, MediaLocator outML) {
@@ -134,22 +116,22 @@ class JpegImagesToMovie implements ControllerListener, DataSinkListener {
         DataSink dsink;
         if ((dsink = createDataSink(p, outML)) == null) {
             System.err
-                    .println("Failed to create a DataSink for the given output MediaLocator: "
-                            + outML);
+                    .println("Fallo al crear el DataSink con el MediaLocator de"
+                            + " salida: " + outML);
             return false;
         }
 
         dsink.addDataSinkListener(this);
         fileDone = false;
 
-        System.err.println("start processing...");
+        System.err.println("Creando video...");
 
         // OK, we can now start the actual transcoding.
         try {
             p.start();
             dsink.start();
         } catch (IOException e) {
-            System.err.println("IO error during processing");
+            System.err.println("IO error durante el procesamiento");
             return false;
         }
 
@@ -163,7 +145,7 @@ class JpegImagesToMovie implements ControllerListener, DataSinkListener {
         }
         p.removeControllerListener(this);
 
-        System.err.println("...done processing.");
+        System.out.println("...Video creado correctamente.");
 
         return true;
     }
@@ -273,144 +255,6 @@ class JpegImagesToMovie implements ControllerListener, DataSinkListener {
                 waitFileSync.notifyAll();
             }
         }
-    }
-
-    public static void main(String args[]) {
-        // changed this method a bit
-
-        if (args.length == 0) {
-            prUsage();
-        }
-
-        // Parse the arguments.
-        int i = 0;
-        int width = -1, height = -1, frameRate = -1;
-        Vector<String> inputFiles = new Vector<String>();
-        String rootDir = null;
-        String outputURL = null;
-
-        while (i < args.length) {
-
-            if (args[i].equals("-w")) {
-                i++;
-                if (i >= args.length) {
-                    prUsage();
-                }
-                width = Integer.parseInt(args[i]);
-            } else if (args[i].equals("-h")) {
-                i++;
-                if (i >= args.length) {
-                    prUsage();
-                }
-                height = Integer.parseInt(args[i]);
-            } else if (args[i].equals("-f")) {
-                i++;
-                if (i >= args.length) {
-                    prUsage();
-                }
-                // new Integer(args[i]).intValue();
-                frameRate = Integer.parseInt(args[i]);
-
-            } else if (args[i].equals("-o")) {
-                i++;
-                if (i >= args.length) {
-                    prUsage();
-                }
-                outputURL = args[i];
-            } else if (args[i].equals("-i")) {
-                i++;
-                if (i >= args.length) {
-                    prUsage();
-                }
-                rootDir = args[i];
-
-            } else {
-                System.out.println(".");
-                prUsage();
-            }
-            i++;
-        }
-
-        if (rootDir == null) {
-            System.out
-                    .println("Since no input (-i) forder provided, assuming this JAR is inside JPEGs folder.");
-            rootDir = (new File(".")).getAbsolutePath();
-        }
-        inputFiles = getImageFilesPathsVector(rootDir);
-
-        if (inputFiles.isEmpty()) {
-            prUsage();
-        }
-        if (outputURL == null) {
-            outputURL = (new File(rootDir)).getAbsolutePath() + File.separator
-                    + "jpegs2movie.mp4";
-        }
-        if (!outputURL.toLowerCase().startsWith("file:///")) {
-            outputURL = "file:///" + outputURL;
-        }
-
-        // Check for output file extension.
-        if (!outputURL.toLowerCase().endsWith(".mp4")) {
-            prUsage();
-            outputURL += ".mp4";
-            System.out
-                    .println("outputURL should be ending with mp4. Making this happen.\nNow outputURL is: "
-                            + outputURL);
-        }
-
-        if (width < 0 || height < 0) {
-            prUsage();
-            System.out.println("Trying to guess movie size from first image");
-            BufferedImage firstImageInFolder = getFirstImageInFolder(rootDir);
-            width = firstImageInFolder.getWidth();
-            height = firstImageInFolder.getHeight();
-            System.out.println("width = " + width);
-            System.out.println("height = " + height);
-        }
-
-        // Check the frame rate.
-        if (frameRate < 1) {
-            frameRate = 30;
-        }
-
-        // Generate the output media locators.
-        MediaLocator oml;
-
-        if ((oml = createMediaLocator(outputURL)) == null) {
-            System.err.println("Cannot build media locator from: " + outputURL);
-            System.exit(0);
-        }
-
-        JpegImagesToMovie imageToMovie = new JpegImagesToMovie();
-        imageToMovie.doIt(width, height, frameRate, inputFiles, oml);
-
-        System.exit(0);
-    }
-
-    private static BufferedImage getFirstImageInFolder(String rootDir) {
-        File rootFile = new File(rootDir);
-        String[] list = (rootFile).list();
-        BufferedImage bufferedImage = null;
-        for (String filePath : list) {
-            if (!filePath.toLowerCase().endsWith(".jpeg")
-                    && !filePath.toLowerCase().endsWith(".jpg")) {
-                continue;
-            }
-            try {
-                File file = new File(rootFile.getAbsoluteFile() + File.separator + filePath);
-                FileInputStream fis = new FileInputStream(file);
-                return ImageIO.read(file);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        throw new IllegalStateException("Failed to find any jpg images in source folder");
-    }
-
-    static void prUsage() {
-        System.err
-                .println("Usage: java JpegImagesToMovie [-w <width>] [-h <height>] [-f <frame rate>] [-o <output URL>] -i <input JPEG files dir Path>");
-        // System.exit(-1);
     }
 
     /**

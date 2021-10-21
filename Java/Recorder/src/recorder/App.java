@@ -1,19 +1,23 @@
 package recorder;
+
 import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 import javax.imageio.ImageIO;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 
 /**
- * @author  Adrian Marin Alcala
- * Desc:    Aplicacion que realiza una grabacion de video a base de solo screenshots
+ * @author Adrian Marin Alcala Desc: Aplicacion que realiza una grabacion de
+ * video a base de solo screenshots
  */
 public class App extends javax.swing.JFrame {
 
@@ -21,32 +25,42 @@ public class App extends javax.swing.JFrame {
     int x = 0;
     static Thread t;
     static String directory;
-    
-    public BufferedImage robo() throws Exception{
+    int fpsCounter[] = {10, 20, 30, 60};
+
+    public BufferedImage robo() throws Exception {
         String date = formatter.format(Calendar.getInstance().getTime());
-        
+
         Robot robot = new Robot();
 
         BufferedImage screenShot = robot.createScreenCapture(new Rectangle(Toolkit.getDefaultToolkit().getScreenSize()));
         ImageIO.write(screenShot, "JPG", new File(directory + date + ".jpg"));
         System.out.println("Imagen tomada correctamente \"" + date + ".jpg\"");
-        
+
         return screenShot;
     }
-    
+
     public App() {
-        formatter = new SimpleDateFormat("yyyyMMddhhmmssa");
-        directory = System.getProperty("user.dir") 
+        formatter = new SimpleDateFormat("yyyy-MM-dd-hh-mm-ss");
+        directory = System.getProperty("user.dir")
                 + "\\src\\recorder\\Screenshots\\";
         File path = new File(directory);
-        if (!path.isDirectory())
+        if (!path.isDirectory()) {
             new File(directory).mkdirs();
-        
+        }
+
         initComponents();
+
+        Image configIcon;
+        Image url = Toolkit.getDefaultToolkit().createImage(this.getClass()
+                .getResource("/recorder/config.png"));
+        configIcon = url.getScaledInstance(jLabel3.getWidth(),
+                jLabel3.getHeight(), Image.SCALE_SMOOTH);
+        jLabel3.setIcon(new ImageIcon(configIcon));
+
         setLocationRelativeTo(null);
         setTitle("Grabadora de pantalla");
+        setResizable(false);
         setVisible(true);
-        
     }
 
     /**
@@ -58,16 +72,17 @@ public class App extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
+        jComboBox1 = new javax.swing.JComboBox<>();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
+        jPanel1 = new javax.swing.JPanel();
+        ImageContainer = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jLabel1.setBackground(new java.awt.Color(153, 153, 153));
-        jLabel1.setForeground(new java.awt.Color(204, 204, 204));
-
-        jButton1.setText("Capturar");
+        jButton1.setText("Iniciar Grabación");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -81,44 +96,85 @@ public class App extends javax.swing.JFrame {
             }
         });
 
+        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "10 FPS", "20 FPS", "30 FPS", "60 FPS" }));
+
+        jLabel2.setText("Cuadros por segundo:");
+
+        jLabel3.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+
+        jPanel1.setBackground(new java.awt.Color(0, 0, 0));
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(ImageContainer, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(ImageContainer, javax.swing.GroupLayout.DEFAULT_SIZE, 387, Short.MAX_VALUE)
+                .addContainerGap())
+        );
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(0, 318, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(30, 30, 30)
+                        .addComponent(jButton2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(326, 326, 326)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 98, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(57, 57, 57)
-                .addComponent(jButton2)
-                .addContainerGap(200, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 41, Short.MAX_VALUE)
-                    .addComponent(jButton2))
-                .addGap(16, 16, 16))
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, Short.MAX_VALUE)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 16, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    boolean stateRecording = false;
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{            
-            Image dimg = robo().getScaledInstance(jLabel1.getWidth(), 
-                    jLabel1.getHeight(), Image.SCALE_SMOOTH);
+        jButton1.setText((stateRecording ? "Iniciar Grabación" : "Detener Grabación"));
+        stateRecording = !stateRecording;
+        try {
+            Image dimg = robo().getScaledInstance(ImageContainer.getWidth(),
+                    ImageContainer.getHeight(), Image.SCALE_SMOOTH);
             //Thread.sleep((long)33.333);
-            jLabel1.setIcon(new ImageIcon(dimg));
-        }catch(Exception ex){
-            JOptionPane.showMessageDialog(null, 
+            ImageContainer.setIcon(new ImageIcon(dimg));
+
+            //configBtn.setIcon(new ImageIcon(dimg));
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,
                     "Ocurrio un error:" + ex.getMessage(), "Error",
                     JOptionPane.ERROR_MESSAGE);
         }
@@ -126,7 +182,9 @@ public class App extends javax.swing.JFrame {
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         videoTransform vT = new videoTransform(directory);
-        vT.createVideo();
+        System.out.println("Cuadros por segundo configurados en "
+                + fpsCounter[jComboBox1.getSelectedIndex()]);
+        vT.createVideo(fpsCounter[jComboBox1.getSelectedIndex()]);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
@@ -166,8 +224,12 @@ public class App extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel ImageContainer;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JPanel jPanel1;
     // End of variables declaration//GEN-END:variables
 }
